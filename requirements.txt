@@ -3,6 +3,5 @@ pocketsphinx
 pyaudio
 streamlit
 SpeechRecognition
-os
 tempfile
 audio_recorder_streamlit
