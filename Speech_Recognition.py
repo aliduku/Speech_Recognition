@@ -1,28 +1,27 @@
 import streamlit as st
 import speech_recognition as sr
 from audio_recorder_streamlit import audio_recorder
-import tempfile
+from io import BytesIO
 
 def transcribe_audio(api, audio_data, language):
     r = sr.Recognizer()
 
     try:
-        # Create a temporary audio file
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio_file:
-            temp_audio_file.write(audio_data)
-            temp_audio_file.seek(0)  # Reset file pointer
-            # Use the temporary audio file as the audio source
-            with sr.AudioFile(temp_audio_file.name) as source:
-                audio = r.record(source)
-                if api == "Google":
-                    return r.recognize_google(audio, language=language)
-                elif api == "WHISPER":
-                    return r.recognize_whisper(audio, language=language.split('-')[0])
-                elif api == "Sphinx":
-                    if language == "en-US":
-                        return r.recognize_sphinx(audio, language=language)
-                    else:
-                        raise sr.UnknownValueError("Sphinx supports only en-US")
+        # Create a BytesIO object from audio data
+        audio_io = BytesIO(audio_data)
+        
+        # Use BytesIO object as the audio source
+        with sr.AudioFile(audio_io) as source:
+            audio = r.record(source)
+            if api == "Google":
+                return r.recognize_google(audio, language=language)
+            elif api == "WHISPER":
+                return r.recognize_whisper(audio, language=language.split('-')[0])
+            elif api == "Sphinx":
+                if language == "en-US":
+                    return r.recognize_sphinx(audio, language=language)
+                else:
+                    raise sr.UnknownValueError("Sphinx supports only en-US")
     except sr.UnknownValueError as e:
         st.error(f"Error: Sorry, the model did not understand. {str(e)}")
     except sr.RequestError as e:
@@ -32,7 +31,9 @@ def main():
     st.title("Multilingual Speech Recognition App")
     st.write("Click on the microphone icon to start recording and speaking:")
 
+    # Dropdown to select speech recognition API
     api_choice = st.selectbox("Select Speech Recognition API", ("Google", "WHISPER", "Sphinx"))
+    # Dropdown to select language
     language_choice = st.selectbox("Select Language", ("en-US", "de-DE", "ar-EG"))
 
     # Capture audio data using the audio recorder
@@ -52,6 +53,7 @@ def main():
         audio_data = None
         st.write("Transcription cleared.")
 
+    # Download button for the transcription
     if hasattr(st.session_state, "transcription") and st.session_state.transcription and st.download_button(label="Download Transcription!", data=st.session_state.transcription, file_name="transcription.txt", mime="text/plain"):
         st.success("Downloaded Successfully.")
 
