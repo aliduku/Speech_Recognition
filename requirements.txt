@@ -2,4 +2,4 @@ openai-whisper
 pocketsphinx
 pyaudio
 streamlit
-speech_recognition
+SpeechRecognition
