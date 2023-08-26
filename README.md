@@ -25,9 +25,22 @@ The Speech Recognition App is built using Python and Streamlit, utilizing the `s
 
 1. Install the required libraries using the following command:
    
+   ```
+   pip install streamlit speech_recognition whisper
+   ```
+
 2. Clone this repository:
 
+   ```
+   git clone https://github.com/yourusername/speech-recognition-app.git
+   cd speech-recognition-app
+   ```
+
 3. Run the Streamlit app:
+
+   ```
+   streamlit run app.py
+   ```
 
 4. The app will open in your browser. Select the desired API and language, then click "Start Recording" to transcribe your speech.
 
@@ -37,8 +50,8 @@ Access the Speech Recognition App through this link: [Speech Recognition App](ht
 
 ## Notes
 
-- The app uses Google, Whisper, and Sphinx APIs for speech recognition.
-- Whisper requires additional configuration for the languages.
+- The app uses Google Cloud Speech, Whisper, and Sphinx APIs for speech recognition.
+- Whisper requires additional configuration and a model file.
 - The Sphinx API supports only English (en-US).
 - The app uses the Streamlit session state to maintain the transcription history.
 
